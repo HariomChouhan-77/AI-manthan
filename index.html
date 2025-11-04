@@ -1,0 +1,1263 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>AI Placement Launchpad</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --primary-gradient: linear-gradient(90deg, #3B6EFF, #6C5CE7);
+      --secondary-gradient: linear-gradient(90deg, #00D9FF, #00C2A8);
+      --danger: #FF6B9D;
+      --warning: #FFB84D;
+      --bg-light: #F8FAFF;
+      --bg-lighter: #F0F4FF;
+      --text-dark: #0B1733;
+      --text-muted: #6B7280;
+      --shadow: 0 8px 32px rgba(13, 38, 77, 0.12);
+      --shadow-lg: 0 16px 48px rgba(13, 38, 77, 0.16);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Poppins', 'Inter', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      color: var(--text-dark);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .wrap {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header.appbar {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      padding: 24px 32px;
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+      position: relative;
+      z-index: 100;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      flex-shrink: 0;
+    }
+
+    .brand {
+      background: var(--primary-gradient);
+      color: white;
+      padding: 14px 20px;
+      border-radius: 14px;
+      box-shadow: 0 10px 40px rgba(59, 110, 255, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand .logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      font-size: 18px;
+    }
+
+    .brand h1 {
+      font-size: 18px;
+      margin: 0;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+    }
+
+    .brand p {
+      margin: 0;
+      font-size: 12px;
+      opacity: 0.9;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Main content - SCROLLABLE */
+    .content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 32px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .content::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .content::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .content::-webkit-scrollbar-thumb {
+      background: rgba(59, 110, 255, 0.3);
+      border-radius: 4px;
+    }
+
+    .content::-webkit-scrollbar-thumb:hover {
+      background: rgba(59, 110, 255, 0.5);
+    }
+
+    /* Upload Container */
+    .uploadContainer {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px;
+      border-radius: var(--radius);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(20px);
+      animation: slideIn 0.4s ease;
+    }
+
+    .panelTitle {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 12px;
+      font-family: 'Playfair Display', serif;
+      text-align: center;
+    }
+
+    .panelSubtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 32px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Analyzing State */
+    .analyzingContainer {
+      width: 100%;
+      max-width: 600px;
+      display: none;
+    }
+
+    .analyzingPanel {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 60px 40px;
+      border-radius: var(--radius);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(20px);
+      text-align: center;
+      animation: slideIn 0.4s ease;
+    }
+
+    .analyzingTitle {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 24px;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .analyzingAnimation {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin: 40px 0;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--primary-gradient);
+      animation: bounce 1.4s infinite ease-in-out;
+    }
+
+    .dot:nth-child(1) { animation-delay: -0.32s; }
+    .dot:nth-child(2) { animation-delay: -0.16s; }
+    .dot:nth-child(3) { animation-delay: 0s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+
+    .analyzingSteps {
+      text-align: left;
+      margin: 32px 0;
+    }
+
+    .analyzingStep {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      margin-bottom: 8px;
+      border-radius: 8px;
+      background: #F0F4FF;
+      font-size: 14px;
+      color: var(--text-muted);
+      transition: all 0.3s ease;
+    }
+
+    .analyzingStep.active {
+      background: linear-gradient(135deg, #EEF6FF, #E8EEFF);
+      color: #3B6EFF;
+      font-weight: 600;
+    }
+
+    .analyzingStep.completed {
+      background: #F0FFF7;
+      color: #00C2A8;
+    }
+
+    .stepDot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+
+    .stepDot.loading {
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--text-dark);
+      font-size: 16px;
+      text-align: center;
+    }
+
+    input[type="file"] {
+      padding: 18px;
+      border-radius: 14px;
+      border: 3px dashed #3B6EFF;
+      background: linear-gradient(180deg, #FFFFFF 0%, #F9FAFB 100%);
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    input[type="file"]:hover {
+      border-color: #6C5CE7;
+      background: linear-gradient(180deg, #F0F4FF 0%, #E8EEFF 100%);
+      transform: translateY(-2px);
+    }
+
+    .btn {
+      background: var(--primary-gradient);
+      border: none;
+      color: white;
+      padding: 16px 32px;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(59, 110, 255, 0.3);
+      transition: all 0.3s ease;
+      font-size: 16px;
+      font-family: 'Poppins', sans-serif;
+      width: 100%;
+      margin-bottom: 12px;
+    }
+
+    .btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 40px rgba(59, 110, 255, 0.4);
+    }
+
+    .btn.secondary {
+      background: transparent;
+      border: 2px solid #E5E7EB;
+      color: var(--text-muted);
+      box-shadow: none;
+    }
+
+    .btn.secondary:hover {
+      background: rgba(240, 244, 255, 0.8);
+      border-color: #3B6EFF;
+      color: var(--text-dark);
+    }
+
+    .hint {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 16px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #E5E7EB, transparent);
+      margin: 24px 0;
+    }
+
+    /* Results Panel */
+    .resultWrap {
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    .resultWrap.show {
+      display: flex;
+    }
+
+    .scoreCard {
+      padding: 24px;
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(20px);
+      animation: slideInUp 0.6s ease;
+      opacity: 0;
+    }
+
+    .scoreCard.visible {
+      opacity: 1;
+    }
+
+    @keyframes slideInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .scoreBoxWrap {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .scoreNumber {
+      font-size: 36px;
+      font-weight: 700;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      min-width: 120px;
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .scoreBar {
+      flex: 1;
+      height: 16px;
+      background: linear-gradient(90deg, #F0F4FF, #E8EEFF);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(59, 110, 255, 0.2);
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .scoreFill {
+      height: 100%;
+      width: 0%;
+      background: var(--secondary-gradient);
+      border-radius: 999px;
+      transition: width 2.5s cubic-bezier(0.2, 0.9, 0.2, 1), background 0.3s;
+      box-shadow: 0 4px 14px rgba(62, 100, 255, 0.2) inset;
+    }
+
+    .sessId {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 12px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .sectionTitle {
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--text-dark);
+      margin: 16px 0 12px 0;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .listBox {
+      background: linear-gradient(135deg, rgba(248, 250, 255, 0.8), rgba(240, 244, 255, 0.6));
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(59, 110, 255, 0.15);
+    }
+
+    .fixesList {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .fixesList li {
+      margin-bottom: 10px;
+      color: var(--text-dark);
+      font-size: 14px;
+      line-height: 1.6;
+      animation: fadeInLeft 0.8s ease forwards;
+      opacity: 0;
+    }
+
+    @keyframes fadeInLeft {
+      from { opacity: 0; transform: translateX(-10px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .fixesList li:nth-child(1) { animation-delay: 0.3s; }
+    .fixesList li:nth-child(2) { animation-delay: 0.6s; }
+    .fixesList li:nth-child(3) { animation-delay: 0.9s; }
+
+    .chips {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .chip {
+      background: linear-gradient(135deg, #EEF6FF, #E8EEFF);
+      color: #225;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 13px;
+      border: 1px solid rgba(59, 110, 255, 0.2);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      animation: popIn 0.5s ease forwards;
+      opacity: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .chip:nth-child(1) { animation-delay: 1.2s; }
+    .chip:nth-child(2) { animation-delay: 1.5s; }
+    .chip:nth-child(3) { animation-delay: 1.8s; }
+
+    .chip:hover {
+      background: linear-gradient(135deg, #DDE7FF, #D0D9FF);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(59, 110, 255, 0.2);
+    }
+
+    /* Tooltip */
+    .tooltipPopup {
+      position: fixed;
+      background: rgba(255, 255, 255, 0.98);
+      border: 2px solid #3B6EFF;
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(20px);
+      z-index: 10000;
+      max-width: 300px;
+      display: none;
+      animation: popInTooltip 0.3s ease;
+    }
+
+    @keyframes popInTooltip {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .tooltipPopup.visible {
+      display: block;
+    }
+
+    .tooltipTitle {
+      font-weight: 700;
+      color: #3B6EFF;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    .tooltipDesc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .tooltipButtons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .tooltipButtons button {
+      flex: 1;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tooltipButtons .learnBtn {
+      background: var(--primary-gradient);
+      color: white;
+    }
+
+    .tooltipButtons .learnBtn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59, 110, 255, 0.3);
+    }
+
+    .tooltipButtons .closeBtn {
+      background: #F0F4FF;
+      color: var(--text-muted);
+      border: 1px solid #E5E7EB;
+    }
+
+    .tooltipButtons .closeBtn:hover {
+      background: #E8EEFF;
+    }
+
+    .roadmap {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .roadmap li {
+      margin-bottom: 14px;
+      font-size: 14px;
+      color: var(--text-dark);
+      line-height: 1.6;
+      animation: fadeInLeft 0.8s ease forwards;
+      opacity: 0;
+    }
+
+    .roadmap li:nth-child(1) { animation-delay: 2.1s; }
+    .roadmap li:nth-child(2) { animation-delay: 2.4s; }
+    .roadmap li:nth-child(3) { animation-delay: 2.7s; }
+    .roadmap li:nth-child(4) { animation-delay: 3s; }
+
+    .roadmap strong {
+      color: var(--text-dark);
+      font-weight: 700;
+    }
+
+    .roadmap .time {
+      color: var(--text-muted);
+      font-size: 12px;
+      margin-left: 8px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .mockInterviewBtn {
+      display: inline-block;
+      background: var(--secondary-gradient);
+      color: white;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(0, 201, 168, 0.3);
+      transition: all 0.3s ease;
+      border: none;
+      font-size: 15px;
+      margin-top: 16px;
+      animation: slideInUp 0.6s ease 3.3s forwards;
+      opacity: 0;
+    }
+
+    .mockInterviewBtn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(0, 201, 168, 0.4);
+    }
+
+    /* Mock Interview */
+    .mockCard {
+      padding: 24px;
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(20px);
+      animation: slideIn 0.6s ease;
+      display: none;
+    }
+
+    .mockCard.show {
+      display: block;
+    }
+
+    .mockHeader {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .mockHeader .sectionTitle {
+      margin: 0;
+    }
+
+    .mockSubtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-family: 'Inter', sans-serif;
+    }
+
+    #mockQuestionBox {
+      margin-top: 12px;
+      padding: 14px;
+      background: linear-gradient(135deg, #F8FAFF, #F0F4FF);
+      border-radius: 10px;
+      border-left: 4px solid #3B6EFF;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-dark);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      border-radius: 12px;
+      padding: 14px;
+      border: 2px solid #E5E7EB;
+      font-size: 14px;
+      resize: vertical;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s ease;
+      margin-top: 12px;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #3B6EFF;
+      box-shadow: 0 0 0 3px rgba(59, 110, 255, 0.1);
+      background: #F8FAFF;
+    }
+
+    .buttonGroup {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      align-items: center;
+    }
+
+    .mockResult {
+      margin-top: 16px;
+      padding: 16px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #F0FFF7, #E8FFF2);
+      border: 1px solid rgba(0, 200, 168, 0.2);
+      animation: slideIn 0.4s ease;
+    }
+
+    /* Reset button at end */
+    .resetButtonPanel {
+      width: 100%;
+      max-width: 1000px;
+      padding: 20px 24px;
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(20px);
+      display: none;
+      text-align: center;
+    }
+
+    .resetButtonPanel.show {
+      display: block;
+      animation: slideIn 0.4s ease;
+    }
+
+    .resetButtonPanel .btn {
+      width: auto;
+      padding: 14px 40px;
+      margin-bottom: 0;
+      font-size: 16px;
+      background: linear-gradient(90deg, #FF6B9D, #FF8E72);
+      display: inline-block;
+    }
+
+    .resetButtonPanel .btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 40px rgba(255, 107, 157, 0.4);
+    }
+
+    .resetButtonText {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 12px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .content {
+        padding: 16px;
+      }
+
+      .panel, .analyzingPanel {
+        padding: 24px;
+      }
+
+      .panelTitle {
+        font-size: 22px;
+      }
+
+      .scoreNumber {
+        font-size: 28px;
+      }
+
+      .tooltipPopup {
+        max-width: 90vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="appbar">
+      <div class="brand">
+        <div class="logo">PL</div>
+        <div>
+          <h1>AI Placement Launchpad</h1>
+          <p>Professional Resume & Interview Prep</p>
+        </div>
+      </div>
+    </header>
+
+    <div class="content">
+      <!-- Upload Section -->
+      <div id="uploadSection" class="uploadContainer">
+        <div class="panel">
+          <div class="panelTitle">Upload Your Resume</div>
+          <div class="panelSubtitle">Get AI-powered analysis and recommendations</div>
+
+          <input type="file" id="resumeFile" accept=".pdf,.docx,.txt" />
+          <button class="btn" id="uploadBtn">Upload & Evaluate</button>
+
+          <div class="hint">Upload your resume file (PDF, DOCX, or TXT) to receive AI-powered analysis and personalized learning roadmap.</div>
+
+          <div class="divider"></div>
+
+          <button class="btn secondary" id="resetBtn">Reset</button>
+        </div>
+      </div>
+
+      <!-- Analyzing Section -->
+      <div id="analyzingSection" class="analyzingContainer">
+        <div class="analyzingPanel">
+          <div class="analyzingTitle">Analyzing Your Resume</div>
+
+          <div class="analyzingAnimation">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+
+          <div class="analyzingSteps">
+            <div class="analyzingStep active" id="step1">
+              <span class="stepDot loading"></span>
+              <span>Parsing resume content</span>
+            </div>
+            <div class="analyzingStep" id="step2">
+              <span class="stepDot"></span>
+              <span>Extracting key skills</span>
+            </div>
+            <div class="analyzingStep" id="step3">
+              <span class="stepDot"></span>
+              <span>Comparing with industry standards</span>
+            </div>
+            <div class="analyzingStep" id="step4">
+              <span class="stepDot"></span>
+              <span>Generating recommendations</span>
+            </div>
+          </div>
+
+          <p style="color: var(--text-muted); font-size: 13px; margin-top: 24px;">Deep scanning for improvements...</p>
+        </div>
+      </div>
+
+      <!-- Results Section -->
+      <div id="resultsSection" class="resultWrap">
+        <div class="scoreCard" id="result">
+          <div class="scoreBoxWrap">
+            <div>
+              <div style="display:flex; align-items:center; gap:16px;">
+                <div class="scoreNumber" id="scoreBox">-</div>
+                <div style="flex:1;">
+                  <div class="scoreBar">
+                    <div class="scoreFill" id="scoreFill"></div>
+                  </div>
+                  <div class="sessId">Session: <span id="sessId">-</span></div>
+                </div>
+              </div>
+
+              <div style="margin-top:16px;">
+                <div class="sectionTitle">Recommendations</div>
+                <div class="listBox fixesList" id="fixesBox"></div>
+              </div>
+            </div>
+
+            <div style="flex-shrink:0;">
+              <div class="sectionTitle">Skills to Learn</div>
+              <div class="listBox">
+                <div class="chips" id="missingBox"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:20px;">
+            <div class="sectionTitle">Learning Roadmap</div>
+            <div class="listBox">
+              <ol class="roadmap" id="roadmapBox"></ol>
+            </div>
+          </div>
+
+          <button class="mockInterviewBtn" id="startMockBtn">🎯 Start Mock Interview</button>
+        </div>
+
+        <!-- Mock Interview -->
+        <div class="mockCard" id="mockPanel">
+          <div class="mockHeader">
+            <div class="sectionTitle">Mock Interview Practice</div>
+            <div class="mockSubtitle">Get instant AI feedback</div>
+          </div>
+
+          <div id="mockQuestionBox"></div>
+          <textarea id="mockAnswer" placeholder="Type your answer here..."></textarea>
+
+          <div class="buttonGroup">
+            <button class="btn" id="submitAnswerBtn">Submit Answer</button>
+            <button class="btn secondary" id="nextQBtn">Next Question</button>
+          </div>
+
+          <div id="mockResultBox"></div>
+        </div>
+
+        <!-- Reset Button Panel at End -->
+        <div id="resetPanel" class="resetButtonPanel">
+          <button class="btn" id="resetBtnEnd">↻ Reset & Start Over</button>
+          <div class="resetButtonText">Ready to try another resume?</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tooltip Popup -->
+  <div id="tooltip" class="tooltipPopup"></div>
+
+  <script>
+    const skillDescriptions = {
+      "SQL": "SQL is essential for querying and managing databases. Learn to write complex queries, joins, and optimize performance.",
+      "REST APIs": "Understanding REST architecture helps you build scalable web services. Master HTTP methods, status codes, and API design.",
+      "Unit Testing": "Write reliable code with comprehensive unit tests. Learn testing frameworks and best practices for your language.",
+      "System Design (basic)": "Start with fundamentals of system architecture, scalability, and design patterns for distributed systems.",
+      "Data Structures": "Master fundamental data structures like arrays, linked lists, trees, and graphs for efficient algorithms.",
+      "System Design (intermediate)": "Deep dive into designing large-scale systems with load balancing, caching, and microservices.",
+      "Role-specific keywords": "Tailor your resume with keywords from job descriptions. Use relevant tools, frameworks, and industry terms.",
+      "Project metrics": "Quantify your project impact with metrics like performance improvements, cost savings, or user growth."
+    };
+
+    const CANNED = {
+      "bad_resume.pdf": {
+        "session_id": "sess_bad_001",
+        "score": 28,
+        "fixes": [
+          "Add measurable metrics to projects (e.g., 'reduced load time by 30%')",
+          "Move skills section to top and include role-specific keywords (SQL, REST APIs)",
+          "Shorten objective and use bullet points for clarity"
+        ],
+        "missing_skills": ["SQL", "REST APIs", "Unit Testing"],
+        "roadmap": [
+          {"title": "Core SQL", "resource": "SQLBolt (lesson + practice)", "time": "1 week"},
+          {"title": "REST APIs Basics", "resource": "FreeCodeCamp REST API tutorial", "time": "1 week"},
+          {"title": "Small Project", "resource": "Build TODO app with backend", "time": "1 week"},
+          {"title": "Mock Interviews", "resource": "3 practice interviews on platform", "time": "1 week"}
+        ],
+        "mock_questions": [
+          "What is SQL JOIN and when would you use INNER vs LEFT JOIN?",
+          "Explain REST and difference between PUT and POST.",
+          "Describe a time you debugged a production issue."
+        ]
+      },
+      "mid_resume.pdf": {
+        "session_id": "sess_mid_001",
+        "score": 62,
+        "fixes": [
+          "Highlight a single major project with measurable outcomes",
+          "Add a short 'Key Skills' list at top with role keywords",
+          "Remove outdated coursework to reduce length"
+        ],
+        "missing_skills": ["System Design (basic)", "Data Structures"],
+        "roadmap": [
+          {"title": "DSA Basics", "resource": "GeeksforGeeks practice set", "time": "2 weeks"},
+          {"title": "Small System Design", "resource": "Grokking the System Design (intro)", "time": "1 week"},
+          {"title": "Project Enhancement", "resource": "Add tests and documentation", "time": "1 week"},
+          {"title": "Mock Interviews", "resource": "Scheduled 3 rounds", "time": "1 week"}
+        ],
+        "mock_questions": [
+          "Explain a hash table and its time complexity for insert/search.",
+          "How would you design a URL shortener service?",
+          "Walk me through your biggest project."
+        ]
+      },
+      "good_resume.pdf": {
+        "session_id": "sess_good_001",
+        "score": 86,
+        "fixes": [
+          "Add one more quantifiable metric to Project A",
+          "Add a short summary sentence with role-specific keywords",
+          "Consider adding a link to a live demo or GitHub README"
+        ],
+        "missing_skills": ["System Design (intermediate)"],
+        "roadmap": [
+          {"title": "Advanced System Design", "resource": "Read case study X", "time": "2 weeks"},
+          {"title": "Interview polish", "resource": "Mock panels with mentors", "time": "1 week"},
+          {"title": "Public Project Demo", "resource": "Deploy demo to Netlify", "time": "1 week"},
+          {"title": "Negotiate Offers", "resource": "Salary negotiation guides", "time": "1 week"}
+        ],
+        "mock_questions": [
+          "Design a scalable notification service.",
+          "Explain how you would optimize a slow SQL query.",
+          "Tell me about a time you led a team."
+        ]
+      },
+      "default": {
+        "session_id": "sess_def_001",
+        "score": 50,
+        "fixes": [
+          "Add specific technologies/keywords for your target role",
+          "Make projects more concise with key achievements",
+          "Add a contact section with GitHub/LinkedIn links"
+        ],
+        "missing_skills": ["Role-specific keywords", "Project metrics"],
+        "roadmap": [
+          {"title": "Identify Keywords", "resource": "Collect 5 JD examples", "time": "3 days"},
+          {"title": "Project Polish", "resource": "Add metrics", "time": "1 week"},
+          {"title": "Small Skill Course", "resource": "Short tutorial", "time": "1 week"},
+          {"title": "Mock Interview", "resource": "1 practice round", "time": "3 days"}
+        ],
+        "mock_questions": [
+          "Tell me about yourself.",
+          "Explain one technical project you worked on.",
+          "How do you handle tight deadlines?"
+        ]
+      }
+    };
+
+    const uploadBtn = document.getElementById('uploadBtn');
+    const resumeFile = document.getElementById('resumeFile');
+    const result = document.getElementById('result');
+    const scoreBox = document.getElementById('scoreBox');
+    const scoreFill = document.getElementById('scoreFill');
+    const sessIdEl = document.getElementById('sessId');
+    const fixesBox = document.getElementById('fixesBox');
+    const missingBox = document.getElementById('missingBox');
+    const roadmapBox = document.getElementById('roadmapBox');
+    const mockPanel = document.getElementById('mockPanel');
+    const mockQuestionBox = document.getElementById('mockQuestionBox');
+    const mockAnswer = document.getElementById('mockAnswer');
+    const submitAnswerBtn = document.getElementById('submitAnswerBtn');
+    const nextQBtn = document.getElementById('nextQBtn');
+    const mockResultBox = document.getElementById('mockResultBox');
+    const resetBtn = document.getElementById('resetBtn');
+    const resetBtnEnd = document.getElementById('resetBtnEnd');
+    const uploadSection = document.getElementById('uploadSection');
+    const analyzingSection = document.getElementById('analyzingSection');
+    const resultsSection = document.getElementById('resultsSection');
+    const resetPanel = document.getElementById('resetPanel');
+    const startMockBtn = document.getElementById('startMockBtn');
+    const tooltip = document.getElementById('tooltip');
+
+    let sessionData = null;
+    let currentMockIndex = 0;
+
+    uploadBtn.addEventListener('click', () => {
+      const file = resumeFile.files[0];
+      if (!file) {
+        alert('Please select a file to upload.');
+        return;
+      }
+
+      let key = 'default';
+      const fname = file.name.toLowerCase();
+      if (fname.includes('bad')) key = 'bad_resume.pdf';
+      else if (fname.includes('mid')) key = 'mid_resume.pdf';
+      else if (fname.includes('good')) key = 'good_resume.pdf';
+
+      const base = JSON.parse(JSON.stringify(CANNED[key]));
+      base.session_id = 'sess_' + Math.random().toString(36).slice(2, 9);
+      sessionData = base;
+      currentMockIndex = 0;
+      showAnalyzing(base);
+    });
+
+    function showAnalyzing(data) {
+      uploadSection.style.display = 'none';
+      analyzingSection.style.display = 'block';
+      resultsSection.classList.remove('show');
+      resetPanel.classList.remove('show');
+      document.querySelector('.content').scrollTop = 0;
+
+      setTimeout(() => updateStep(2), 1500);
+      setTimeout(() => updateStep(3), 3000);
+      setTimeout(() => updateStep(4), 4500);
+      setTimeout(() => renderResult(data), 5800);
+    }
+
+    function updateStep(step) {
+      const prevStep = document.getElementById('step' + (step - 1));
+      const currentStep = document.getElementById('step' + step);
+
+      if (prevStep) {
+        prevStep.classList.remove('active');
+        prevStep.classList.add('completed');
+      }
+      if (currentStep) {
+        currentStep.classList.add('active');
+      }
+    }
+
+    function renderResult(data) {
+      analyzingSection.style.display = 'none';
+      resultsSection.classList.add('show');
+      resetPanel.classList.add('show');
+
+      setTimeout(() => {
+        document.querySelector('.content').scrollTop = 0;
+      }, 100);
+
+      sessIdEl.textContent = data.session_id;
+      scoreBox.textContent = data.score + ' / 100';
+      const val = Math.max(0, Math.min(100, Number(data.score)));
+      scoreFill.style.width = '0%';
+
+      if (val < 40) scoreFill.style.background = 'linear-gradient(90deg, #FF6B9D, #FFB84D)';
+      else if (val < 70) scoreFill.style.background = 'linear-gradient(90deg, #FFB84D, #FFD93D)';
+      else scoreFill.style.background = 'linear-gradient(90deg, #00D9FF, #00C2A8)';
+
+      result.classList.add('visible');
+
+      setTimeout(() => scoreFill.style.width = val + '%', 500);
+
+      fixesBox.innerHTML = '<ol class="fixesList">' + data.fixes.map(f => `<li>${escapeHtml(f)}</li>`).join('') + '</ol>';
+      missingBox.innerHTML = data.missing_skills.map(s => `<span class="chip" data-skill="${escapeHtml(s)}">${escapeHtml(s)}</span>`).join('');
+      roadmapBox.innerHTML = data.roadmap.map(r => `<li><strong>${escapeHtml(r.title)}</strong> — ${escapeHtml(r.resource)} <span class="time">(${escapeHtml(r.time)})</span></li>`).join('');
+
+      setTimeout(() => {
+        document.querySelectorAll('.chip').forEach(chip => {
+          chip.addEventListener('click', (e) => showChipTooltip(e));
+        });
+      }, 100);
+
+      mockResultBox.innerHTML = '';
+      mockAnswer.value = '';
+    }
+
+    function showChipTooltip(event) {
+      const chip = event.target;
+      const skill = chip.getAttribute('data-skill');
+      const desc = skillDescriptions[skill] || 'Learn more about this skill.';
+
+      const rect = chip.getBoundingClientRect();
+
+      tooltip.innerHTML = `
+        <div class="tooltipTitle">${escapeHtml(skill)}</div>
+        <div class="tooltipDesc">${escapeHtml(desc)}</div>
+        <div class="tooltipButtons">
+          <button class="learnBtn" onclick="closeTooltip(); document.getElementById('startMockBtn').scrollIntoView({behavior:'smooth'});">Learn Now</button>
+          <button class="closeBtn" onclick="closeTooltip();">Close</button>
+        </div>
+      `;
+
+      tooltip.classList.add('visible');
+      tooltip.style.left = (rect.left + rect.width / 2 - 150) + 'px';
+      tooltip.style.top = (rect.bottom + 10) + 'px';
+    }
+
+    function closeTooltip() {
+      tooltip.classList.remove('visible');
+    }
+
+    startMockBtn.addEventListener('click', () => {
+      mockPanel.classList.add('show');
+      mockPanel.scrollIntoView({ behavior: 'smooth' });
+      showMockQuestion();
+    });
+
+    function showMockQuestion() {
+      if (!sessionData) return;
+      const qs = sessionData.mock_questions || [];
+      if (currentMockIndex >= qs.length) {
+        mockQuestionBox.innerHTML = '<em style="color: #6B7280;">All questions completed!</em>';
+        return;
+      }
+      mockQuestionBox.innerHTML = `<div style="font-weight:600; color: #0B1733;">Q${currentMockIndex + 1}:</div><div style="margin-top:8px; color: #0B1733;">${escapeHtml(qs[currentMockIndex])}</div>`;
+    }
+
+    submitAnswerBtn.addEventListener('click', () => {
+      if (!sessionData) return alert('Upload a resume first.');
+      const answer = mockAnswer.value.trim();
+      if (!answer) return alert('Please type your answer.');
+      fakeMockEval(answer);
+    });
+
+    nextQBtn.addEventListener('click', () => {
+      if (!sessionData) return alert('Upload a resume first.');
+      const qs = sessionData.mock_questions || [];
+      currentMockIndex = Math.min(qs.length - 1, currentMockIndex + 1);
+      if (currentMockIndex < qs.length) {
+        showMockQuestion();
+        mockAnswer.value = '';
+        mockResultBox.innerHTML = '';
+      }
+    });
+
+    function resetApp() {
+      sessionData = null;
+      currentMockIndex = 0;
+      uploadSection.style.display = 'flex';
+      analyzingSection.style.display = 'none';
+      resultsSection.classList.remove('show');
+      resetPanel.classList.remove('show');
+      mockPanel.classList.remove('show');
+      result.classList.remove('visible');
+      mockResultBox.innerHTML = '';
+      resumeFile.value = '';
+      sessIdEl.textContent = '-';
+      scoreBox.textContent = '-';
+      scoreFill.style.width = '0%';
+      closeTooltip();
+
+      for (let i = 1; i <= 4; i++) {
+        const step = document.getElementById('step' + i);
+        step.classList.remove('active', 'completed');
+        if (i === 1) step.classList.add('active');
+      }
+
+      document.querySelector('.content').scrollTop = 0;
+    }
+
+    resetBtn.addEventListener('click', resetApp);
+    resetBtnEnd.addEventListener('click', resetApp);
+
+    function fakeMockEval(answer) {
+      let base = 50;
+      const len = answer.length;
+      if (len > 200) base += 30;
+      else if (len > 80) base += 15;
+      else base -= 10;
+
+      const keywords = ['example', 'project', 'performance', 'optimize', 'sql', 'api', 'test'];
+      let bonus = 0;
+      const lower = answer.toLowerCase();
+      keywords.forEach(k => { if (lower.includes(k)) bonus += 4; });
+
+      let score = Math.max(25, Math.min(95, base + bonus));
+      let strengths = [];
+      let improvements = [];
+
+      if (len > 80) strengths.push('Detailed steps and structure.');
+      else strengths.push('Clear but add specifics and metrics.');
+
+      if (bonus >= 4) strengths.push('Good use of domain keywords.');
+
+      improvements.push('Provide a concise example with numbers.');
+      improvements.push('Structure the answer into 2–3 clear bullets.');
+
+      mockResultBox.innerHTML = `<div class="mockResult">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+          <div style="font-size: 20px; font-weight: 700; background: var(--secondary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">${score} / 100</div>
+          <div style="font-size: 13px; color: var(--text-muted);">AI Evaluation</div>
+        </div>
+        <strong>Strengths</strong>
+        <ul>${strengths.map(s => `<li>${escapeHtml(s)}</li>`).join('')}</ul>
+        <strong>Areas for Improvement</strong>
+        <ul>${improvements.map(s => `<li>${escapeHtml(s)}</li>`).join('')}</ul>
+      </div>`;
+
+      currentMockIndex++;
+      const qs = sessionData.mock_questions || [];
+      if (currentMockIndex < qs.length) {
+        setTimeout(() => {
+          showMockQuestion();
+          mockAnswer.value = '';
+        }, 800);
+      } else {
+        setTimeout(() => {
+          mockQuestionBox.innerHTML = '<em style="color: #6B7280;">Mock interview complete. Great practice!</em>';
+        }, 500);
+      }
+    }
+
+    function escapeHtml(s) {
+      return (s + '').replace(/[&<>"']/g, function(m) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+      });
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.classList.contains('chip') && !tooltip.contains(e.target)) {
+        closeTooltip();
+      }
+    });
+  </script>
+</body>
+</html>
